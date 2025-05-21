@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { FiX, FiSend } from 'react-icons/fi';
+import { useState, useEffect, useRef } from 'react';
+import { FiX, FiSend, FiClipboard } from 'react-icons/fi';
 
 interface TextInputProps {
   onSubmit: (text: string) => void;
@@ -9,43 +9,70 @@ interface TextInputProps {
 }
 
 export default function TextInput({ onSubmit, inputText, setInputText, language = 'en' }: TextInputProps) {
+  // 标记是否已经触发自动改写的状态
+  const [autoTriggered, setAutoTriggered] = useState<boolean>(false);
+  // 上一次处理的文本长度
+  const lastProcessedLength = useRef<number>(0);
+
   // 根据语言选择示例文本
   const getExamples = () => {
     if (language === 'zh') {
       return [
-        "人类与AI正在不断融合，彼此协作的能力日益增强。",
-        "随着科技的发展，教育变得更加普及和个性化。",
-        "可持续发展需要平衡经济增长、环境保护和社会公平。",
-        "现代社会中，跨文化交流对增进国际理解至关重要。"
+        "人类与AI正在不断融合，彼此协作的能力日益增强。AI技术的进步使得人机交互变得更加自然流畅，许多复杂任务可以通过人机协作更高效地完成。未来，随着技术的不断发展，人类与AI的边界可能会变得越来越模糊。"
       ];
     } else {
       return [
-        "The collaboration between humans and AI continues to evolve, with their mutual capabilities growing stronger.",
-        "Technology is transforming education, making learning more accessible and personalized than ever before.",
-        "Sustainable development requires balancing economic growth with environmental protection and social equity.",
-        "In modern society, cross-cultural communication is vital for enhancing international understanding."
+        "The collaboration between humans and AI continues to evolve, with their mutual capabilities growing stronger. Advances in AI technology have made human-machine interaction more natural and fluid, allowing many complex tasks to be completed more efficiently through collaboration. In the future, as technology continues to develop, the boundaries between humans and AI may become increasingly blurred."
       ];
     }
   };
 
   const examples = getExamples();
 
-  // 自动处理文本（如果停止输入1秒后）
+  // 处理粘贴文本
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setInputText(text);
+    } catch (err) {
+      console.error('无法访问剪贴板:', err);
+      // 提供后备方案 - 提示用户手动粘贴
+      alert(language === 'zh' ? 
+        '无法自动粘贴。请使用键盘快捷键(Ctrl+V或Cmd+V)手动粘贴。' : 
+        'Cannot paste automatically. Please use keyboard shortcut (Ctrl+V or Cmd+V) to paste manually.'
+      );
+    }
+  };
+
+  // 自动处理文本（如果停止输入1秒后且文本长度超过100个字符）
   useEffect(() => {
-    if (inputText.trim().length > 50) { // 50个字符阈值
+    const currentLength = inputText.trim().length;
+    
+    // 重置自动触发状态的条件：输入内容重新变少或清空
+    if (currentLength < lastProcessedLength.current) {
+      setAutoTriggered(false);
+    }
+    
+    // 保存当前文本长度
+    lastProcessedLength.current = currentLength;
+    
+    // 仅在文本长度超过100字符且未自动触发过时设置定时器
+    if (currentLength > 100 && !autoTriggered) {
       const timeoutId = setTimeout(() => {
         onSubmit(inputText);
+        setAutoTriggered(true); // 标记已经触发过
       }, 1000);
       
       // 清除之前的计时器
       return () => clearTimeout(timeoutId);
     }
-  }, [inputText, onSubmit]);
+  }, [inputText, onSubmit, autoTriggered]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputText.trim()) {
       onSubmit(inputText);
+      setAutoTriggered(true); // 手动提交也标记为已触发
     }
   };
 
@@ -59,6 +86,8 @@ export default function TextInput({ onSubmit, inputText, setInputText, language 
 
   const clearText = () => {
     setInputText('');
+    setAutoTriggered(false); // 清空文本时重置触发状态
+    lastProcessedLength.current = 0;
   };
 
   const getPlaceholder = () => {
@@ -73,12 +102,16 @@ export default function TextInput({ onSubmit, inputText, setInputText, language 
 
   const getHintText = () => {
     return language === 'zh' 
-      ? "提示: 输入超过50个字符并等待1秒后将自动改写" 
-      : "Tip: Auto-rewriting will start 1 second after typing more than 50 characters";
+      ? "提示: 输入超过100个字符并等待1秒后将自动改写" 
+      : "Tip: Auto-rewriting will start 1 second after typing more than 100 characters";
   };
 
   const getExampleTitle = () => {
     return language === 'zh' ? "示例文本:" : "Examples:";
+  };
+
+  const getPasteButtonText = () => {
+    return language === 'zh' ? "粘贴文本" : "Paste Text";
   };
 
   return (
@@ -120,14 +153,25 @@ export default function TextInput({ onSubmit, inputText, setInputText, language 
             </div>
           )}
         </div>
-        <button
-          type="submit"
-          className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all flex items-center justify-center space-x-2 font-medium"
-          style={{ boxShadow: '0 4px 14px rgba(79, 70, 229, 0.25)' }}
-        >
-          <FiSend size={16} />
-          <span>{getSubmitButtonText()}</span>
-        </button>
+        <div className="flex space-x-2">
+          <button
+            type="button"
+            onClick={handlePaste}
+            className="py-3 px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all flex items-center justify-center space-x-2 font-medium"
+            style={{ boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)' }}
+          >
+            <FiClipboard size={16} />
+            <span>{getPasteButtonText()}</span>
+          </button>
+          <button
+            type="submit"
+            className="flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all flex items-center justify-center space-x-2 font-medium"
+            style={{ boxShadow: '0 4px 14px rgba(79, 70, 229, 0.25)' }}
+          >
+            <FiSend size={16} />
+            <span>{getSubmitButtonText()}</span>
+          </button>
+        </div>
       </form>
       <p className="text-xs text-gray-500 dark:text-gray-400 text-center italic">
         {getHintText()}
