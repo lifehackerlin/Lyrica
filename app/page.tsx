@@ -81,8 +81,8 @@ export default function Home() {
     }
   };
   
-  // 使用useRef存储防抖函数
-  const debouncedProcessWithAIRef = useRef<DebouncedFunc<ProcessWithAIFunction>>();
+  // 使用useRef存储防抖函数，提供null作为初始值
+  const debouncedProcessWithAIRef = useRef<DebouncedFunc<ProcessWithAIFunction> | null>(null);
   
   useEffect(() => {
     const storedDarkMode = localStorage.getItem('darkMode');
@@ -157,7 +157,9 @@ export default function Home() {
     
     // 清理函数
     return () => {
-      debouncedProcessWithAIRef.current?.cancel();
+      if (debouncedProcessWithAIRef.current) {
+        debouncedProcessWithAIRef.current.cancel();
+      }
     };
   }, [language]);
   
@@ -167,9 +169,16 @@ export default function Home() {
       throw new Error('API processing function not initialized');
     }
     
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
+      const handleResult = (result: string) => {
+        resolve(result);
+      };
+      
       try {
-        debouncedFn(text, mode, resolve).catch(reject);
+        const promise = debouncedFn(text, mode, handleResult);
+        if (promise && typeof promise.catch === 'function') {
+          promise.catch(reject);
+        }
       } catch (error) {
         reject(error);
       }
