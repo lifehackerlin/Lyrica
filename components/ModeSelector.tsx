@@ -33,26 +33,32 @@ export default function ModeSelector({ selectedMode, onSelectMode, darkMode = fa
   };
 
   const modes = getModes();
+  const modesLabel = language === 'zh' ? '模式' : 'Modes';
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {modes.map((mode) => (
-        <button
-          key={mode.id}
-          onClick={() => onSelectMode(mode.label)}
-          className={`px-4 py-2 rounded-md text-sm transition-colors ${
-            selectedMode === mode.label
-              ? darkMode
-                ? 'bg-indigo-700 text-white'
-                : 'bg-indigo-600 text-white'
-              : darkMode
-                ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-          }`}
-        >
-          {mode.label}
-        </button>
-      ))}
+    <div className="flex items-center space-x-4">
+      <div className={`text-lg font-semibold whitespace-nowrap ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+        {modesLabel}:
+      </div>
+      <div className="flex flex-wrap gap-2 flex-1">
+        {modes.map((mode) => (
+          <button
+            key={mode.id}
+            onClick={() => onSelectMode(mode.label)}
+            className={`px-4 py-2 rounded-md text-sm transition-colors ${
+              selectedMode === mode.label
+                ? darkMode
+                  ? 'bg-indigo-700 text-white'
+                  : 'bg-indigo-600 text-white'
+                : darkMode
+                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+            }`}
+          >
+            {mode.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 } 

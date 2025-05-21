@@ -29,7 +29,7 @@ const DynamicResultDisplay = dynamic(() => import('@/components/ResultDisplay'),
     };
     
     return (
-      <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-4 h-full min-h-[200px] flex flex-col items-center justify-center">
+      <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 h-full min-h-[250px] flex flex-col items-center justify-center">
         <p className="text-gray-500 dark:text-gray-400">{getLoadingText()}</p>
       </div>
     );
@@ -177,7 +177,8 @@ export default function Home() {
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API错误响应:', errorData);
         throw new Error(errorData.error || (language === 'zh' ? 'API调用失败' : 'API call failed'));
       }
       
@@ -192,30 +193,26 @@ export default function Home() {
   const getUIText = () => {
     if (language === 'zh') {
       return {
-        title: 'AI智能改写',
-        subtitle: '输入文本或上传文件，让AI为您改写成不同风格',
+        tagline: '用AI提升您的写作',
         inputLabel: '输入',
         resultLabel: '结果',
-        or: '或者'
       };
     } else {
       return {
-        title: 'AI Text Rewriting',
-        subtitle: 'Input text or upload a file and let AI rewrite it in different styles',
+        tagline: 'Enhance your writing with AI',
         inputLabel: 'Input',
         resultLabel: 'Result',
-        or: 'or'
       };
     }
   };
   
-  const { title, subtitle, inputLabel, resultLabel, or } = getUIText();
+  const { tagline, inputLabel, resultLabel } = getUIText();
 
   return (
     <main className={`min-h-screen flex flex-col ${
       darkMode 
         ? 'bg-gradient-to-b from-gray-900 to-gray-800 text-white' 
-        : 'bg-gradient-to-b from-blue-50 to-indigo-50'
+        : 'bg-gradient-to-b from-indigo-100 via-purple-50 to-white'
     }`}>
       <Header 
         darkMode={darkMode} 
@@ -224,50 +221,49 @@ export default function Home() {
         setLanguage={setLanguage} 
       />
       
-      <div className="container mx-auto flex-grow px-4 py-8 max-w-5xl">
-        <div className={`rounded-xl shadow-lg p-6 md:p-8 ${
-          darkMode ? 'bg-gray-800 text-white' : 'bg-white'
+      <div className="container mx-auto flex-grow px-4 py-6 max-w-6xl">
+        <div className={`rounded-xl shadow-2xl overflow-hidden ${
+          darkMode ? 'bg-gray-800 text-white border border-gray-700' : 'bg-white border border-gray-100'
         }`}>
-          <div className="mb-6">
-            <h2 className={`text-2xl font-bold mb-2 ${
-              darkMode ? 'text-white' : 'text-gray-800'
-            }`}>{title}</h2>
-            <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>{subtitle}</p>
+          <div className="p-6 md:p-8 pb-4">
+            <div className="mb-4 text-center">
+              <h1 className={`text-4xl font-bold mb-3 ${
+                darkMode ? 'text-white' : 'text-gray-800'
+              } tracking-tight`}>
+                <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">Lyrica.ai</span>
+              </h1>
+              <p className={`text-lg font-medium tracking-wide ${
+                darkMode ? 'text-indigo-300' : 'text-indigo-600'
+              } opacity-90`}>{tagline}</p>
+            </div>
           </div>
           
-          <ModeSelector 
-            selectedMode={selectedMode} 
-            onSelectMode={handleModeChange} 
-            darkMode={darkMode}
-            language={language}
-          />
+          <div className="px-6 md:px-8 py-4">
+            <ModeSelector 
+              selectedMode={selectedMode} 
+              onSelectMode={handleModeChange} 
+              darkMode={darkMode}
+              language={language}
+            />
+          </div>
           
-          <div className="mt-6 grid md:grid-cols-2 gap-8">
-            <div>
+          <div className="p-6 md:p-8 grid md:grid-cols-2 gap-8">
+            <div className="relative">
               <h3 className={`text-lg font-semibold mb-3 ${
                 darkMode ? 'text-gray-200' : 'text-gray-700'
               }`}>{inputLabel}</h3>
-              <div className="space-y-4">
+              <div className="relative">
                 <TextInput 
                   onSubmit={handleTextSubmit} 
                   inputText={inputText} 
-                  setInputText={setInputText} 
+                  setInputText={setInputText}
+                  language={language}
                 />
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className={`w-full border-t ${
-                      darkMode ? 'border-gray-700' : 'border-gray-300'
-                    }`}></div>
-                  </div>
-                  <div className="relative flex justify-center">
-                    <span className={`px-2 text-sm ${
-                      darkMode ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'
-                    }`}>{or}</span>
-                  </div>
-                </div>
                 <FileUpload 
                   onFileProcessed={handleFileUpload} 
                   setInputText={setInputText}
+                  language={language}
+                  darkMode={darkMode}
                 />
               </div>
             </div>

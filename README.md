@@ -1,28 +1,65 @@
-# Lyrica.ai - AI Text Rewriting Assistant
+# 🎯 Lyrica AI - 智能文本改写助手
 
-Lyrica.ai是一个强大的AI文本改写工具，支持将文本改写为多种不同风格。
+[![GitHub stars](https://img.shields.io/github/stars/lifehackerlin/Lyrica)](https://github.com/lifehackerlin/Lyrica/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/lifehackerlin/Lyrica)](https://github.com/lifehackerlin/Lyrica/network)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Flyrica-ai.vercel.app)](https://lyrica-ai.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 功能特点
+## 🚀 产品简介
 
-- 🤖 AI驱动的文本改写，支持多种风格
-- 📄 支持直接上传文档提取文本
-- 💾 改写后可下载Word或PDF文件或复制文本
-- 🔄 提供多种改写模式：标准、正式、学术、拓展、总结、故事化、创意
-- 🌙 支持暗黑模式，护眼舒适
-- 🌐 支持中英文切换
+Lyrica AI 是一款革命性的人工智能文本改写工具，专为中文和英文用户打造。它能够智能理解文本内容，并根据不同场景需求，将文本改写成多种风格，让您的写作更加专业、生动和富有创意。
 
-## 技术栈
+### ✨ 核心特性
 
-- Next.js 15
-- React 19
-- TailwindCSS 4
-- OpenRouter API (Claude 3.7 Sonnet)
+- 🎭 **多种改写风格**
+  - 标准模式：提升文章流畅度
+  - 正式模式：适合商务场景
+  - 学术模式：符合学术规范
+  - 拓展模式：丰富内容细节
+  - 总结模式：提炼核心要点
+  - 故事化模式：增加趣味性
+  - 创意模式：激发创新表达
 
-## 本地开发
+- 📝 **智能写作助手**
+  - 自动润色和优化
+  - 语法纠错
+  - 表达建议
+  - 智能扩写
+
+- 🛠 **便捷功能**
+  - 一键文档上传
+  - 多种导出格式
+  - 实时预览
+  - 历史记录
+
+## 🎯 适用场景
+
+- 📚 学术论文改写
+- 💼 商务文档优化
+- 📰 新闻稿件编辑
+- 📝 创意文案创作
+- 📖 内容营销文章
+- 🎓 学习资料整理
+
+## 🛠 技术栈
+
+- ⚡ Next.js 15
+- ⚛️ React 19
+- 🎨 TailwindCSS 4
+- 🤖 OpenRouter API (Claude 3.7 Sonnet)
+- 🌐 国际化支持
+
+## 🚀 快速开始
+
+### 在线使用
+
+访问 [Lyrica AI](https://lyrica-ai.vercel.app) 即可开始使用。
+
+### 本地开发
 
 1. 克隆项目
 ```bash
-git clone https://github.com/yourusername/lyrica-ai.git
+git clone https://github.com/lifehackerlin/lyrica-ai.git
 cd lyrica-ai
 ```
 
@@ -36,132 +73,53 @@ npm install
 npm run dev
 ```
 
-4. 在浏览器中访问 `http://localhost:3000`
+4. 访问 http://localhost:3000
 
-## 推送到GitHub
+## 📈 性能优化
 
-如果您想将此项目推送到您自己的GitHub仓库，请按照以下步骤操作：
+- ⚡ 极速响应
+- 🔄 智能缓存
+- 📱 移动端适配
+- 🌐 全球CDN加速
 
-1. 在GitHub上创建一个新的仓库
+## 🔒 安全与隐私
 
-2. 初始化本地Git仓库（如果尚未初始化）
-```bash
-git init
-```
+- 数据加密传输
+- 隐私保护
+- 合规性保障
+- 安全审计
 
-3. 添加远程仓库
-```bash
-git remote add origin https://github.com/yourusername/lyrica-ai.git
-```
+## 🌟 为什么选择 Lyrica AI？
 
-4. 提交所有文件
-```bash
-git add .
-git commit -m "Initial commit"
-```
+1. 专业的AI算法支持
+2. 丰富的改写风格
+3. 简单直观的操作界面
+4. 快速的响应速度
+5. 可靠的服务保障
+6. 持续的功能更新
 
-5. 推送到GitHub
-```bash
-git push -u origin main
-```
+## 📚 使用教程
 
-## 部署
+详细的使用说明请访问我们的[在线文档](https://lyrica-ai.vercel.app/docs)。
 
-该项目可以部署到Vercel、Netlify或其他支持Next.js的平台。
+## 🤝 参与贡献
 
-### Vercel部署
+欢迎提交 Issue 和 Pull Request！
 
-1. 创建Vercel账户并连接到GitHub
-2. 导入项目
-3. 设置环境变量（例如OPENROUTER_API_KEY）
-4. 点击部署
+## 📄 开源协议
 
-## 许可证
+本项目采用 MIT 协议开源，详见 [LICENSE](LICENSE) 文件。
 
-MIT
+## 🌟 支持我们
+
+如果您觉得 Lyrica AI 对您有帮助，欢迎给我们一个 Star ⭐️
+
+## 📞 联系我们
+
+- 官方网站：[https://lyrica-ai.vercel.app](https://lyrica-ai.vercel.app)
+- GitHub：[https://github.com/lifehackerlin/Lyrica](https://github.com/lifehackerlin/Lyrica)
+- 电子邮件：support@lyrica-ai.com
 
 ---
 
-English Version:
-
-# Lyrica.ai - AI Text Rewriting Assistant
-
-Lyrica.ai is a powerful AI text rewriting tool that supports rewriting text in multiple different styles.
-
-## Features
-
-- 🤖 AI-driven text rewriting in multiple styles
-- 📄 Support for direct document upload and text extraction
-- 💾 Download rewritten text as Word or PDF, or copy to clipboard
-- 🔄 Multiple rewriting modes: Standard, Formal, Academic, Expanded, Summary, Narrative, Creative
-- 🌙 Dark mode for comfortable viewing
-- 🌐 English and Chinese language support
-
-## Tech Stack
-
-- Next.js 15
-- React 19
-- TailwindCSS 4
-- OpenRouter API (Claude 3.7 Sonnet)
-
-## Local Development
-
-1. Clone the project
-```bash
-git clone https://github.com/yourusername/lyrica-ai.git
-cd lyrica-ai
-```
-
-2. Install dependencies
-```bash
-npm install
-```
-
-3. Start the development server
-```bash
-npm run dev
-```
-
-4. Visit `http://localhost:3000` in your browser
-
-## Pushing to GitHub
-
-If you want to push this project to your own GitHub repository, follow these steps:
-
-1. Create a new repository on GitHub
-
-2. Initialize a local Git repository (if not already initialized)
-```bash
-git init
-```
-
-3. Add the remote repository
-```bash
-git remote add origin https://github.com/yourusername/lyrica-ai.git
-```
-
-4. Commit all files
-```bash
-git add .
-git commit -m "Initial commit"
-```
-
-5. Push to GitHub
-```bash
-git push -u origin main
-```
-
-## Deployment
-
-This project can be deployed to Vercel, Netlify, or any other platform that supports Next.js.
-
-### Vercel Deployment
-
-1. Create a Vercel account and connect it to GitHub
-2. Import the project
-3. Set up environment variables (e.g., OPENROUTER_API_KEY)
-4. Click deploy
-
-## License
-
-MIT
+<p align="center">用AI提升写作，让表达更有力量！</p>
