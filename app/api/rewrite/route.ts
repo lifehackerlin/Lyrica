@@ -77,19 +77,34 @@ async function rewriteWithAI(text: string, mode: string, language: string): Prom
     // 从环境变量获取API密钥
     const API_KEY = process.env.OPENROUTER_API_KEY;
     
-    if (!API_KEY) {
-      console.error('OpenRouter API密钥未配置');
-      throw new Error('API key configuration error');
-    }
-    
-    console.log('API密钥状态:', { 
-      hasKey: !!API_KEY,
-      keyLength: API_KEY.length
+    // 添加详细的环境变量检查日志
+    console.log('环境变量状态:', {
+      hasEnvVar: !!process.env.OPENROUTER_API_KEY,
+      envVarLength: process.env.OPENROUTER_API_KEY?.length,
+      nodeEnv: process.env.NODE_ENV,
     });
     
-    // 构建提示
-    const systemPrompt = language === 'zh' 
-      ? `你是一位多风格改写大师，擅长将一段原文改写为用户指定风格。支持以下改写模式：
+    if (!API_KEY) {
+      console.error('OpenRouter API密钥未配置或为空');
+      throw new Error('API key not found in environment variables');
+    }
+    
+    console.log('准备调用OpenRouter API...');
+    
+    // 调用API
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`,
+        'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://lyrica-ai.vercel.app',
+        'X-Title': 'Lyrica AI'
+      },
+      body: JSON.stringify({
+        model: 'anthropic/claude-3-sonnet-20240229',
+        messages: [
+          { role: 'system', content: language === 'zh' 
+            ? `你是一位多风格改写大师，擅长将一段原文改写为用户指定风格。支持以下改写模式：
 
 1. 标准：忠实保留原意，只做流畅性提升和基础润色。
 2. 正式：使用书面语、严谨句式和专业表达，适合商务、官方或职场场景。
@@ -100,7 +115,7 @@ async function rewriteWithAI(text: string, mode: string, language: string): Prom
 7. 创意：自由发挥，可重组内容结构，加入修辞、比喻、夸张等手法，让语言富有创意。
 
 请根据用户选择的模式对原文进行改写，仅输出改写结果，无需解释或重复模式名。`
-      : `You are a master of multiple writing styles, skilled at rewriting text in a style specified by the user. You support the following rewriting modes:
+            : `You are a master of multiple writing styles, skilled at rewriting text in a style specified by the user. You support the following rewriting modes:
 
 1. Standard: Faithfully preserve the original meaning while improving flow and providing basic polish.
 2. Formal: Use written language, rigorous sentence structures, and professional expressions, suitable for business, official, or workplace settings.
@@ -110,23 +125,8 @@ async function rewriteWithAI(text: string, mode: string, language: string): Prom
 6. Narrative: Rewrite information into vivid stories, scenes, or analogies to make it more engaging and interesting.
 7. Creative: Freely restructure content, adding rhetorical devices, metaphors, exaggeration, and other techniques to make the language creative.
 
-Please rewrite the original text according to the user's chosen mode. Output only the rewritten result without explanation or repeating the mode name.`;
-
-    console.log('调用OpenRouter API...', { mode, language });
-    
-    // 调用API
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`,
-        'HTTP-Referer': 'https://lyrica-ai.vercel.app',
-        'X-Title': 'Lyrica AI'
-      },
-      body: JSON.stringify({
-        model: 'anthropic/claude-3.7-sonnet', // 使用最新的模型版本
-        messages: [
-          { role: 'system', content: systemPrompt },
+Please rewrite the original text according to the user's chosen mode. Output only the rewritten result without explanation or repeating the mode name.`
+          },
           { role: 'user', content: language === 'zh'
             ? `请使用${mode}风格改写以下文本：\n\n${text}`
             : `Please rewrite the following text in ${mode} style:\n\n${text}`
@@ -142,7 +142,12 @@ Please rewrite the original text according to the user's chosen mode. Output onl
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error('OpenRouter API错误响应详情:', errorData);
+      console.error('OpenRouter API错误响应详情:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData,
+        headers: Object.fromEntries(response.headers.entries())
+      });
       
       // 处理特定的错误状态
       if (response.status === 401) {
