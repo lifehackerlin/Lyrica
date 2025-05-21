@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import debounce from 'lodash/debounce';
+import { DebouncedFunc } from 'lodash';
 import Header from '@/components/Header';
 import TextInput from '@/components/TextInput';
 import FileUpload from '@/components/FileUpload';
@@ -36,6 +37,13 @@ const DynamicResultDisplay = dynamic(() => import('@/components/ResultDisplay'),
     );
   }
 });
+
+// 定义处理函数的类型
+type ProcessWithAIFunction = (
+  text: string,
+  mode: string,
+  setResult: (result: string) => void
+) => Promise<void>;
 
 export default function Home() {
   const [inputText, setInputText] = useState<string>('');
@@ -72,6 +80,9 @@ export default function Home() {
       'Creative': '创意'
     }
   };
+  
+  // 使用useRef存储防抖函数
+  const debouncedProcessWithAIRef = useRef<DebouncedFunc<ProcessWithAIFunction>>();
   
   useEffect(() => {
     const storedDarkMode = localStorage.getItem('darkMode');
@@ -118,17 +129,9 @@ export default function Home() {
     }
   }, [language]);
   
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-  
-  const handleModeChange = (mode: Mode) => {
-    setSelectedMode(mode);
-  };
-  
-  // 使用useCallback和debounce创建防抖的处理函数
-  const debouncedProcessWithAI = useCallback(
-    debounce(async (text: string, mode: string, setResult: (result: string) => void) => {
+  // 初始化防抖函数
+  useEffect(() => {
+    debouncedProcessWithAIRef.current = debounce(async (text: string, mode: string, setResult: (result: string) => void) => {
       try {
         const response = await fetch('/api/rewrite', {
           method: 'POST',
@@ -150,22 +153,36 @@ export default function Home() {
         console.error(language === 'zh' ? 'API调用错误:' : 'API call error:', error);
         throw error;
       }
-    }, 1000), // 1秒的防抖延迟
-    [language] // 依赖项
-  );
-
+    }, 1000);
+    
+    // 清理函数
+    return () => {
+      debouncedProcessWithAIRef.current?.cancel();
+    };
+  }, [language]);
+  
   const processWithAI = async (text: string, mode: string): Promise<string> => {
+    const debouncedFn = debouncedProcessWithAIRef.current;
+    if (!debouncedFn) {
+      throw new Error('API processing function not initialized');
+    }
+    
     return new Promise((resolve, reject) => {
-      debouncedProcessWithAI(text, mode, resolve).catch(reject);
+      try {
+        debouncedFn(text, mode, resolve).catch(reject);
+      } catch (error) {
+        reject(error);
+      }
     });
   };
-
-  // 在组件卸载时取消未完成的防抖调用
-  useEffect(() => {
-    return () => {
-      debouncedProcessWithAI.cancel();
-    };
-  }, [debouncedProcessWithAI]);
+  
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+  
+  const handleModeChange = (mode: Mode) => {
+    setSelectedMode(mode);
+  };
   
   const handleTextSubmit = async (text: string) => {
     if (!text.trim()) return;
