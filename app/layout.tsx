@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code'
+    google: 'll9dhZa4pZsyZXWkYGY-TctLr_u1g5TbWarfcMRiMVs'
   },
 }
 
@@ -65,7 +65,7 @@ export default function RootLayout({
       <head>
         <link rel="canonical" href="https://lyrica-ai.vercel.app" />
         <meta name="baidu-site-verification" content="your-baidu-verification-code" />
-        <meta name="google-site-verification" content="your-google-verification-code" />
+        <meta name="google-site-verification" content="ll9dhZa4pZsyZXWkYGY-TctLr_u1g5TbWarfcMRiMVs" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body
