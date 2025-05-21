@@ -74,11 +74,16 @@ export async function POST(req: NextRequest) {
 // 调用AI进行改写
 async function rewriteWithAI(text: string, mode: string, language: string): Promise<string> {
   try {
-    // 使用新的API密钥
-    const API_KEY = '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';
+    // 从环境变量获取API密钥
+    const API_KEY = process.env.OPENROUTER_API_KEY;
+    
+    if (!API_KEY) {
+      console.error('OpenRouter API密钥未配置');
+      throw new Error('API key configuration error');
+    }
     
     console.log('API密钥状态:', { 
-      hasKey: !!API_KEY, 
+      hasKey: !!API_KEY,
       keyLength: API_KEY.length
     });
     
