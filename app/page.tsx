@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import debounce from 'lodash/debounce';
 import Header from '@/components/Header';
 import TextInput from '@/components/TextInput';
 import FileUpload from '@/components/FileUpload';
@@ -125,6 +126,47 @@ export default function Home() {
     setSelectedMode(mode);
   };
   
+  // 使用useCallback和debounce创建防抖的处理函数
+  const debouncedProcessWithAI = useCallback(
+    debounce(async (text: string, mode: string, setResult: (result: string) => void) => {
+      try {
+        const response = await fetch('/api/rewrite', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text, mode, language }),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.error('API错误响应:', errorData);
+          throw new Error(errorData.error || (language === 'zh' ? 'API调用失败' : 'API call failed'));
+        }
+        
+        const data = await response.json();
+        setResult(data.result);
+      } catch (error) {
+        console.error(language === 'zh' ? 'API调用错误:' : 'API call error:', error);
+        throw error;
+      }
+    }, 1000), // 1秒的防抖延迟
+    [language] // 依赖项
+  );
+
+  const processWithAI = async (text: string, mode: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      debouncedProcessWithAI(text, mode, resolve).catch(reject);
+    });
+  };
+
+  // 在组件卸载时取消未完成的防抖调用
+  useEffect(() => {
+    return () => {
+      debouncedProcessWithAI.cancel();
+    };
+  }, [debouncedProcessWithAI]);
+  
   const handleTextSubmit = async (text: string) => {
     if (!text.trim()) return;
     
@@ -163,30 +205,6 @@ export default function Home() {
       setResultText(errorMessage);
     } finally {
       setLoading(false);
-    }
-  };
-  
-  const processWithAI = async (text: string, mode: string): Promise<string> => {
-    try {
-      const response = await fetch('/api/rewrite', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text, mode, language }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('API错误响应:', errorData);
-        throw new Error(errorData.error || (language === 'zh' ? 'API调用失败' : 'API call failed'));
-      }
-      
-      const data = await response.json();
-      return data.result;
-    } catch (error) {
-      console.error(language === 'zh' ? 'API调用错误:' : 'API call error:', error);
-      throw error;
     }
   };
   

@@ -1,5 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// 测试API密钥是否有效
+async function testApiKey(apiKey: string): Promise<boolean> {
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/auth/key', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'https://lyrica-ai.vercel.app',
+        'X-Title': 'Lyrica AI'
+      }
+    });
+    
+    if (!response.ok) {
+      console.error('API密钥验证失败:', {
+        status: response.status,
+        statusText: response.statusText
+      });
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('API密钥验证错误:', error);
+    return false;
+  }
+}
+
 // 处理POST请求
 export async function POST(req: NextRequest) {
   try {
@@ -24,6 +51,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: errorMessage },
         { status: 400 }
+      );
+    }
+
+    // 获取并验证API密钥
+    const API_KEY = process.env.OPENROUTER_API_KEY;
+    console.log('环境变量状态:', {
+      hasKey: !!API_KEY,
+      keyLength: API_KEY?.length,
+      nodeEnv: process.env.NODE_ENV
+    });
+
+    if (!API_KEY) {
+      console.error('API密钥未配置');
+      return NextResponse.json(
+        { error: language === 'zh' ? 'API密钥未配置' : 'API key not configured' },
+        { status: 401 }
+      );
+    }
+
+    // 测试API密钥有效性
+    const isKeyValid = await testApiKey(API_KEY);
+    if (!isKeyValid) {
+      console.error('API密钥无效');
+      return NextResponse.json(
+        { error: language === 'zh' ? 'API密钥无效' : 'Invalid API key' },
+        { status: 401 }
       );
     }
 
