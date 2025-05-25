@@ -67,6 +67,20 @@ export default function RootLayout({
         <meta name="baidu-site-verification" content="your-baidu-verification-code" />
         <meta name="google-site-verification" content="ll9dhZa4pZsyZXWkYGY-TctLr_u1g5TbWarfcMRiMVs" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        {/* Plausible Analytics */}
+        <script defer data-domain="lyrica-three.vercel.app" src="https://plausible.io/js/script.js"></script>
+        
+        {/* Microsoft Clarity */}
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "rozjrrp5fi");
+          `
+        }} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
