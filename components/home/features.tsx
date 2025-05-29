@@ -1,60 +1,58 @@
 'use client'
 
-import { ArrowPathIcon, CloudArrowUpIcon, FingerPrintIcon, LockClosedIcon } from '@heroicons/react/24/outline'
+import { PenTool, Zap, Download, Palette } from 'lucide-react'
 
 const features = [
   {
-    name: 'Global Authentication',
+    name: 'Multiple Writing Styles',
     description:
-      'Seamless sign-in experience for users worldwide. Support for email/password, OAuth providers, and advanced security features that work across all regions.',
-    icon: FingerPrintIcon,
+      'Choose from 7 different writing modes including Standard, Formal, Academic, Expanded, Summary, Narrative, and Creative styles to match your needs.',
+    icon: Palette,
   },
   {
-    name: 'Secure Payments',
+    name: 'Real-time Streaming',
     description:
-      'Accept payments in multiple currencies with support for international payment methods. Our integration with Creem.io ensures smooth transactions for global customers.',
-    icon: LockClosedIcon,
+      'Watch your text being rewritten in real-time with our advanced streaming technology. See the AI craft your content word by word.',
+    icon: Zap,
   },
   {
-    name: 'Developer Friendly',
+    name: 'Instant Downloads',
     description:
-      'Built with Next.js and TypeScript for a modern development experience. Clean code structure and comprehensive documentation to help you get started quickly.',
-    icon: CloudArrowUpIcon,
+      'Export your rewritten content as PDF or Word documents with one click. Perfect for professional presentations and reports.',
+    icon: Download,
   },
   {
-    name: 'Subscription Management',
+    name: 'Smart Auto-Rewrite',
     description:
-      'Ready-to-use subscription models and credit systems. Monitor usage, handle billing cycles, and manage customer accounts - all out of the box.',
-    icon: ArrowPathIcon,
+      'Automatically detects when you paste long text and intelligently suggests the best rewriting mode for your content.',
+    icon: PenTool,
   },
 ]
 
 export default function Features() {
   return (
-    <div id="features" className="bg-background py-24 sm:py-32">
+    <div id="features" className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
-          <h2 className="text-base/7 font-semibold text-primary">Global-Ready Platform</h2>
-          <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-foreground sm:text-5xl lg:text-balance">
-            Everything you need for worldwide business
+          <h2 className="text-base font-semibold leading-7 text-primary">Advanced AI Rewriting</h2>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Everything you need to transform your writing
           </p>
-          <p className="mt-6 text-lg/8 text-muted-foreground">
-            Our starter kit provides all the essential tools to build applications that work globally. 
-            From authentication to payments, we've designed a solution that helps developers launch 
-            faster with features that work across borders.
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">
+            Lyrica.ai combines cutting-edge AI technology with intuitive design to provide the most powerful text rewriting experience available.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
             {features.map((feature) => (
               <div key={feature.name} className="relative pl-16">
-                <dt className="text-base/7 font-semibold text-foreground">
-                  <div className="absolute top-0 left-0 flex size-10 items-center justify-center rounded-lg bg-primary">
-                    <feature.icon aria-hidden="true" className="size-6 text-primary-foreground" />
+                <dt className="text-base font-semibold leading-7 text-foreground">
+                  <div className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+                    <feature.icon aria-hidden="true" className="h-6 w-6 text-primary-foreground" />
                   </div>
                   {feature.name}
                 </dt>
-                <dd className="mt-2 text-base/7 text-muted-foreground">{feature.description}</dd>
+                <dd className="mt-2 text-base leading-7 text-muted-foreground">{feature.description}</dd>
               </div>
             ))}
           </dl>

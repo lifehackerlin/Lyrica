@@ -95,8 +95,7 @@ export default function Pricing() {
               Subscription Plans
             </h2>
             <p className="max-w-[95%] sm:max-w-[85%] text-sm sm:text-lg leading-normal text-muted-foreground">
-              Start building for free and scale up as you grow. All plans
-              include the core features you need to get started.
+              Choose the perfect AI rewriting plan for your needs. All plans include core features to get you started with professional AI text rewriting.
             </p>
           </div>
           <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 mt-8 md:mt-12">
@@ -146,7 +145,7 @@ export default function Pricing() {
                       handleSubscribe(tier.productId, tier.discountCode)
                     }
                   >
-                    Get started
+                    Get Started
                   </Button>
                 </div>
               </div>
@@ -161,8 +160,7 @@ export default function Pricing() {
               Credit Packages
             </h2>
             <p className="max-w-[95%] sm:max-w-[85%] text-sm sm:text-lg leading-normal text-muted-foreground">
-              Purchase credits to use our services on-demand. Perfect for
-              occasional use and testing.
+              Purchase AI rewriting credits as needed. Perfect for occasional users or testing our service.
             </p>
           </div>
           <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 mt-8 md:mt-12">

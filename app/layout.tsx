@@ -12,8 +12,8 @@ const baseUrl = process.env.BASE_URL
 
 export const metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Raphael Starter Kit",
-  description: "The fastest way to build apps with global authentication and payments",
+  title: "Lyrica.ai - AI-Powered Text Rewriting Tool",
+  description: "Professional AI text rewriter with multiple writing styles, real-time streaming output, and document downloads. Transform your writing with advanced AI technology.",
 };
 
 const geistSans = Geist({
@@ -26,10 +26,17 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    user = authUser;
+  } catch (error) {
+    console.error("Auth error:", error);
+  }
 
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
